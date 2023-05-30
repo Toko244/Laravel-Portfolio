@@ -1,0 +1,3 @@
+<a href="{{ route('send.email', $item->id) }}" class="delete_button btn btn-warning" title="Edit">
+                                            Send Email
+                                        </a>
