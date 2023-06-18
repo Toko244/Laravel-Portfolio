@@ -39,110 +39,148 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
-
-Route::get('/blog/details/{id}', [FrontendBlogDetailsController::class, 'index'])->name('blog.details');
-Route::get('/category/blog/{id}', [FrontendBlogDetailsController::class, 'categoryBlogs'])->name('blogs.by.category');
-Route::get('/blogs', [FrontendBlogDetailsController::class, 'allBlogs'])->name('home.blog');
-
-Route::get('/portfolios', [PortfoliosController::class, 'index'])->name('portfolios.index');
-Route::get('/portfolio/details/{id}', [PortfoliosController::class, 'portfolioDetails'])->name('portfolio.details');
-
-Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-Route::post('/contact/store', [ContactController::class, 'store'])->name('contact.store');
-
-Route::get('/about/details', [AboutDetailsController::class, 'index'])->name('about.details');
-
-Route::get('/service/details', [ServiceDetailsController::class, 'index'])->name('services');
-Route::get('/service/details/{id}', [ServiceDetailsController::class, 'serviceDetails'])->name('service.details');
-
-Route::get('/download/resume', [ResumeController::class, 'index'])->name('download.resume');
-
-Route::get('/', function () {
-    return view('frontend.index');
-});
-
 Route::middleware('auth', 'verified')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::get('/admin/logout', [AdminController::class, 'destroy'])->name('admin.logout');
 
     Route::middleware('isAdmin')->group(function () {
 
         Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 
-        Route::get('/admin/all/multi/image/', [MultiImageController::class, 'index'])->name('all.multi.image');
-        Route::get('/admin/about/multi/image/', [MultiImageController::class, 'create'])->name('add.multi.image');
-        Route::post('/admin/store/multi/image', [MultiImageController::class, 'store'])->name('store.multi.image');
-        Route::get('/admin/edit/multi/image/{id}', [MultiImageController::class, 'edit'])->name('edit.multi.image');
-        Route::post('/admin/update/multi/image/{id}', [MultiImageController::class, 'update'])->name('update.multi.image');
-        Route::get('/admin/delete/multi/image/{id}', [MultiImageController::class, 'destroy'])->name('delete.multi.image');
+        Route::controller(MultiImageController::class)->group(function() {
+            Route::get('/admin/all/multi/image/', 'index')->name('all.multi.image');
+            Route::get('/admin/about/multi/image/', 'create')->name('add.multi.image');
+            Route::post('/admin/store/multi/image', 'store')->name('store.multi.image');
+            Route::get('/admin/edit/multi/image/{id}', 'edit')->name('edit.multi.image');
+            Route::post('/admin/update/multi/image/{id}', 'update')->name('update.multi.image');
+            Route::get('/admin/delete/multi/image/{id}', 'destroy')->name('delete.multi.image');
+        });
 
-        Route::get('/admin/portfolios', [PortfolioController::class, 'index'])->name('index.portfolios');
-        Route::get('/admin/create/portfolios', [PortfolioController::class, 'create'])->name('create.portfolios');
-        Route::post('/admin/store/portfolios', [PortfolioController::class, 'store'])->name('store.portfolios');
-        Route::get('/admin/edit/portfolios/{id}', [PortfolioController::class, 'edit'])->name('edit.portfolios');
-        Route::post('/admin/update/portfolios/{id}', [PortfolioController::class, 'update'])->name('update.portfolios');
-        Route::get('/admin/delete/portfolio/{id}', [PortfolioController::class, 'destroy'])->name('delete.portfolios');
-        Route::get('/admin/search/portfolio', [SearchController::class, 'searchPortfolio'])->name('admin.search.portfolio');
+        Route::controller(PortfolioController::class)->group(function() {
+            Route::get('/admin/portfolios', 'index')->name('index.portfolios');
+            Route::get('/admin/create/portfolios', 'create')->name('create.portfolios');
+            Route::post('/admin/store/portfolios', 'store')->name('store.portfolios');
+            Route::get('/admin/edit/portfolios/{id}', 'edit')->name('edit.portfolios');
+            Route::post('/admin/update/portfolios/{id}', 'update')->name('update.portfolios');
+            Route::get('/admin/delete/portfolio/{id}', 'destroy')->name('delete.portfolios');
+        });
 
-        Route::get('/admin/blog/category', [BlogCategoryController::class, 'index'])->name('index.category');
-        Route::get('/admin/blog/category/create', [BlogCategoryController::class, 'create'])->name('create.category');
-        Route::post('/admin/blog/category/store', [BlogCategoryController::class, 'store'])->name('store.category');
-        Route::get('/admin/blog/category/edit/{id}', [BlogCategoryController::class, 'edit'])->name('edit.category');
-        Route::post('/admin/blog/category/update/{id}', [BlogCategoryController::class, 'update'])->name('update.category');
-        Route::get('/admin/blog/category/delete/{id}', [BlogCategoryController::class, 'destroy'])->name('delete.category');
-        Route::get('/admin/search/blog', [SearchController::class, 'searchBlog'])->name('admin.search.blog');
+        Route::controller(BlogCategoryController::class)->group(function() {
+            Route::get('/admin/blog/category', 'index')->name('index.category');
+            Route::get('/admin/blog/category/create', 'create')->name('create.category');
+            Route::post('/admin/blog/category/store', 'store')->name('store.category');
+            Route::get('/admin/blog/category/edit/{id}', 'edit')->name('edit.category');
+            Route::post('/admin/blog/category/update/{id}', 'update')->name('update.category');
+            Route::get('/admin/blog/category/delete/{id}', 'destroy')->name('delete.category');
+        });
 
-        Route::get('/admin/services', [ServiceController::class, 'index'])->name('index.service');
-        Route::get('/admin/services/create', [ServiceController::class, 'create'])->name('create.service');
-        Route::post('/admin/services/store', [ServiceController::class, 'store'])->name('store.service');
-        Route::get('/admin/services/edit/{id}', [ServiceController::class, 'edit'])->name('edit.service');
-        Route::post('/admin/services/update/{id}', [ServiceController::class, 'update'])->name('update.service');
-        Route::get('/admin/services/delete/{id}', [ServiceController::class, 'destroy'])->name('delete.service');
-        Route::get('/admin/search/service', [SearchController::class, 'searchService'])->name('admin.search.service');
+        Route::controller(ServiceController::class)->group(function() {
+            Route::get('/admin/services', 'index')->name('index.service');
+            Route::get('/admin/services/create', 'create')->name('create.service');
+            Route::post('/admin/services/store', 'store')->name('store.service');
+            Route::get('/admin/services/edit/{id}', 'edit')->name('edit.service');
+            Route::post('/admin/services/update/{id}', 'update')->name('update.service');
+            Route::get('/admin/services/delete/{id}', 'destroy')->name('delete.service');
+        });
 
-        Route::get('/admin/Working-Processes', [WorkingProccessController::class, 'index'])->name('index.working.process');
-        Route::get('/admin/Working-Processes/create', [WorkingProccessController::class, 'create'])->name('create.working.process');
-        Route::post('/admin/Working-Processes/store', [WorkingProccessController::class, 'store'])->name('store.working.process');
-        Route::get('/admin/Working-Processes/edit/{id}', [WorkingProccessController::class, 'edit'])->name('edit.working.process');
-        Route::post('/admin/Working-Processes/update/{id}', [WorkingProccessController::class, 'update'])->name('update.working.process');
-        Route::get('/admin/Working-Processes/delete/{id}', [WorkingProccessController::class, 'destroy'])->name('delete.working.process');
-        Route::get('/admin/search/Working-Process', [SearchController::class, 'searchWorkingProcess'])->name('admin.search.working.process');
+        Route::controller(WorkingProccessController::class)->group(function() {
+            Route::get('/admin/Working-Processes', 'index')->name('index.working.process');
+            Route::get('/admin/Working-Processes/create', 'create')->name('create.working.process');
+            Route::post('/admin/Working-Processes/store', 'store')->name('store.working.process');
+            Route::get('/admin/Working-Processes/edit/{id}', 'edit')->name('edit.working.process');
+            Route::post('/admin/Working-Processes/update/{id}', 'update')->name('update.working.process');
+            Route::get('/admin/Working-Processes/delete/{id}', 'destroy')->name('delete.working.process');
+        });
 
-        Route::get('/admin/blogs', [BlogController::class, 'index'])->name('index.blog');
-        Route::get('/admin/blogs/create', [BlogController::class, 'create'])->name('create.blog');
-        Route::post('/admin/blogs/store', [BlogController::class, 'store'])->name('store.blog');
-        Route::get('/admin/blogs/edit/{id}', [BlogController::class, 'edit'])->name('edit.blog');
-        Route::post('/admin/blogs/update/{id}', [BlogController::class, 'update'])->name('update.blog');
-        Route::get('/admin/blogs/delete/{id}', [BlogController::class, 'destroy'])->name('delete.blog');
+        Route::controller(BlogController::class)->group(function() {
+            Route::get('/admin/blogs', 'index')->name('index.blog');
+            Route::get('/admin/blogs/create', 'create')->name('create.blog');
+            Route::post('/admin/blogs/store', 'store')->name('store.blog');
+            Route::get('/admin/blogs/edit/{id}', 'edit')->name('edit.blog');
+            Route::post('/admin/blogs/update/{id}', 'update')->name('update.blog');
+            Route::get('/admin/blogs/delete/{id}', 'destroy')->name('delete.blog');
+        });
 
-        Route::get('/admin/partners', [PartnerController::class, 'index'])->name('partner.index');
-        Route::post('/admin/partners/{id}', [PartnerController::class, 'update'])->name('partner.update');
+        Route::controller(PartnerMultiImageController::class)->group(function() {
+            Route::get('/admin/partner/all/multi/image/', 'index')->name('all.multi.partner.image');
+            Route::get('/admin/partners/multi/image/', 'create')->name('add.multi.partner.image');
+            Route::post('/admin/partners/store/multi/image', 'store')->name('store.multi.partner.image');
+            Route::get('/admin/partners/edit/multi/image/{id}', 'edit')->name('edit.multi.partner.image');
+            Route::post('/admin/partners/update/multi/image/{id}', 'update')->name('update.multi.partner.image');
+            Route::get('/admin/partners/delete/multi/image/{id}', 'destroy')->name('delete.multi.partner.image');
+        });
 
-        Route::get('/admin/partner/all/multi/image/', [PartnerMultiImageController::class, 'index'])->name('all.multi.partner.image');
-        Route::get('/admin/partners/multi/image/', [PartnerMultiImageController::class, 'create'])->name('add.multi.partner.image');
-        Route::post('/admin/partners/store/multi/image', [PartnerMultiImageController::class, 'store'])->name('store.multi.partner.image');
-        Route::get('/admin/partners/edit/multi/image/{id}', [PartnerMultiImageController::class, 'edit'])->name('edit.multi.partner.image');
-        Route::post('/admin/partners/update/multi/image/{id}', [PartnerMultiImageController::class, 'update'])->name('update.multi.partner.image');
-        Route::get('/admin/partners/delete/multi/image/{id}', [PartnerMultiImageController::class, 'destroy'])->name('delete.multi.partner.image');
+        Route::controller(MessageController::class)->group(function() {
+            Route::get('/admin/messages', 'index')->name('admin.contact.index');
+            Route::get('/admin/messages/send_email/{id}', 'send_email')->name('send.email');
+            Route::get('/admin/messages/view_details/{id}', 'viewDetails')->name('view.contact.details');
+            Route::post('/admin/messages/send_user_email/{id}', 'send_user_email')->name('send.user.email');
+            Route::get('/admin/messages/destroy/{id}', 'destroy')->name('admin.contact.destroy');
+        });
 
-        Route::get('/admin/messages', [MessageController::class, 'index'])->name('admin.contact.index');
-        Route::get('/admin/messages/send_email/{id}', [MessageController::class, 'send_email'])->name('send.email');
-        Route::get('/admin/messages/view_details/{id}', [MessageController::class, 'viewDetails'])->name('view.contact.details');
-        Route::post('/admin/messages/send_user_email/{id}', [MessageController::class, 'send_user_email'])->name('send.user.email');
-        Route::get('/admin/messages/destroy/{id}', [MessageController::class, 'destroy'])->name('admin.contact.destroy');
+        Route::controller(SearchController::class)->group(function(){
+            Route::get('/admin/search/portfolio', 'searchPortfolio')->name('admin.search.portfolio');
+            Route::get('/admin/search/blog', 'searchBlog')->name('admin.search.blog');
+            Route::get('/admin/search/service', 'searchService')->name('admin.search.service');
+            Route::get('/admin/search/Working-Process', 'searchWorkingProcess')->name('admin.search.working.process');
+        });
 
-        Route::get('/admin/footer', [FooterController::class, 'index'])->name('footer.index');
-        Route::post('/admin/footer/update/{id}', [FooterController::class, 'update'])->name('footer.update');
+        Route::controller(PartnerController::class)->group(function() {
+            Route::get('/admin/partners', 'index')->name('partner.index');
+            Route::post('/admin/partners/{id}', 'update')->name('partner.update');
+        });
 
-        Route::get('/admin/banner', [BannerController::class, 'index'])->name('banner.index');
-        Route::post('/admin/banner/update/{id}', [BannerController::class, 'update'])->name('banner.update');
+        Route::controller(FooterController::class)->group(function(){
+            Route::get('/admin/footer', 'index')->name('footer.index');
+            Route::post('/admin/footer/update/{id}', 'update')->name('footer.update');
+        });
 
-        Route::get('/admin/about', [AboutMeController::class, 'index'])->name('about.index');
-        Route::post('/admin/about/update/{id}', [AboutMeController::class, 'update'])->name('about.update');
+        Route::controller(BannerController::class)->group(function(){
+            Route::get('/admin/banner', 'index')->name('banner.index');
+            Route::post('/admin/banner/update/{id}', 'update')->name('banner.update');
+        });
+
+        Route::controller(AboutMeController::class)->group(function(){
+            Route::get('/admin/about', 'index')->name('about.index');
+            Route::post('/admin/about/update/{id}', 'update')->name('about.update');
+        });
+    }); // Admin Middleware End
+
+    Route::controller(ProfileController::class)->group(function() {
+        Route::get('/profile','edit')->name('profile.edit');
+        Route::patch('/profile','update')->name('profile.update');
+        Route::delete('/profile','destroy')->name('profile.destroy');
+    });
+
+    Route::get('/admin/logout', [AdminController::class, 'destroy'])->name('admin.logout');
+
+    Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
+    Route::controller(FrontendBlogDetailsController::class)->group(function() {
+        Route::get('/blog/details/{id}', 'index')->name('blog.details');
+        Route::get('/category/blog/{id}', 'categoryBlogs')->name('blogs.by.category');
+        Route::get('/blogs', 'allBlogs')->name('home.blog');
+    });
+
+    Route::controller(PortfoliosController::class)->group(function() {
+        Route::get('/portfolios', 'index')->name('portfolios.index');
+        Route::get('/portfolio/details/{id}', 'portfolioDetails')->name('portfolio.details');
+    });
+
+    Route::controller(ContactController::class)->group(function() {
+        Route::get('/contact', 'index')->name('contact.index');
+        Route::post('/contact/store', 'store')->name('contact.store');
+    });
+
+    Route::controller(ServiceDetailsController::class)->group(function() {
+        Route::get('/service/details', 'index')->name('services');
+        Route::get('/service/details/{id}', 'serviceDetails')->name('service.details');
+    });
+
+    Route::get('/about/details', [AboutDetailsController::class, 'index'])->name('about.details');
+
+    Route::get('/download/resume', [ResumeController::class, 'index'])->name('download.resume');
+
+    Route::get('/', function () {
+        return view('frontend.index');
     });
 });
 
