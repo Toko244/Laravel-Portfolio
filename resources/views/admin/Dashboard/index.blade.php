@@ -94,5 +94,23 @@
             </div><!-- end cardbody -->
         </div><!-- end card -->
     </div><!-- end col -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div class="flex-grow-1">
+                        <p class="text-truncate font-size-14 mb-2">Total Working Processes</p>
+                        <h4 class="mb-2">{{ $workingProcess }}</h4>
+                        <a href="{{ route('index.working.process') }}">All Working Processes</a>
+                    </div>
+                    <div class="avatar-sm">
+                        <span class="avatar-title bg-light text-success rounded-3">
+                            <i class="mdi mdi-currency-btc font-size-24"></i>
+                        </span>
+                    </div>
+                </div>
+            </div><!-- end cardbody -->
+        </div><!-- end card -->
+    </div><!-- end col -->
 </div>
 @endsection

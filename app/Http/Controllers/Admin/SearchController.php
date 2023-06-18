@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Portfolio;
 use App\Models\Service;
+use App\Models\WorkingProcess;
 
 class SearchController extends Controller
 {
@@ -45,6 +46,17 @@ class SearchController extends Controller
                                 ->paginate(10);
 
         return view('admin.Services.index', compact('service'));
+    }
+
+    public function searchWorkingProcess(Request $request)
+    {
+        $search = $request->search;
+
+        $workingProcess = WorkingProcess::where('title', 'LIKE', "%$search%")
+                                            ->orWhere('short_description', 'LIKE', "%$search%")
+                                            ->get();
+
+        return view('admin.Working-Proccess.index', compact('workingProcess'));
     }
 
 }

@@ -17,7 +17,8 @@ class AdminController extends Controller
         $portfolios = DB::table('portfolios')->count();
         $partners = DB::table('partner_multi_images')->count();
         $messages = DB::table('contacts')->count();
-        return view('admin.Dashboard.index', compact('services', 'blogs', 'portfolios', 'partners', 'messages'));
+        $workingProcess = DB::table('working_processes')->count();
+        return view('admin.Dashboard.index', compact('services', 'blogs', 'portfolios', 'partners', 'messages', 'workingProcess'));
     }
 
     public function destroy(Request $request)

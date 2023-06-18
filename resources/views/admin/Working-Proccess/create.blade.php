@@ -4,10 +4,10 @@
 
 <div class="page-wrapper">
     <div class="card-body">
-        <form action="{{ route('') }}" class="custom-validation" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('store.working.process') }}" class="custom-validation" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
-                <label>Service Title</label>
+                <label>Working Process Title</label>
                 <div>
                     <input type="text" class="form-control" name="title" id="">
                     @error('short_description')
@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label>Service Short Description</label>
+                <label>Working Process Short Description</label>
                 <div>
                     <textarea class="form-control" name="short_description" aria-hidden="true"></textarea>
                     @error('short_description')
@@ -27,17 +27,7 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label>Service Description</label>
-                <div>
-                    <textarea id="elm1" name="description" aria-hidden="true"></textarea>
-                    @error('short_description')
-                        <div class="error">{{ $message }}</div>
-                    @enderror
-
-                </div>
-            </div>
-            <div class="mb-3">
-                <label>Service Image</label>
+                <label>Working Process Icon</label>
                 <div>
                     <input type="file" id="image" class="form-control" name="image">
                     @error('image')
@@ -45,7 +35,7 @@
                     @enderror
                 </div>
             </div>
-            <div class="row mb-3">s
+            <div class="row mb-3">
                 <label></label>
                 <div class="col-sm-10">
                     <img src="{{ (!empty('/uploads/portfolio/'))? url('uploads/no_image.jpg'): url('uploads/no_image.jpg') }}" id="showImage" alt="" class="rounded avatar-lg">

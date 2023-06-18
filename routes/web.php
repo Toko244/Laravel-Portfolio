@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PartnerMultiImageController;
 use App\Http\Controllers\Admin\PortfolioController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\WorkingProccessController;
 use App\Http\Controllers\BlogDetailsController;
 use App\Http\Controllers\Frontend\AboutDetailsController;
 use App\Http\Controllers\Frontend\BlogDetailsController as FrontendBlogDetailsController;
@@ -102,6 +103,14 @@ Route::middleware('auth', 'verified')->group(function () {
         Route::post('/admin/services/update/{id}', [ServiceController::class, 'update'])->name('update.service');
         Route::get('/admin/services/delete/{id}', [ServiceController::class, 'destroy'])->name('delete.service');
         Route::get('/admin/search/service', [SearchController::class, 'searchService'])->name('admin.search.service');
+
+        Route::get('/admin/Working-Processes', [WorkingProccessController::class, 'index'])->name('index.working.process');
+        Route::get('/admin/Working-Processes/create', [WorkingProccessController::class, 'create'])->name('create.working.process');
+        Route::post('/admin/Working-Processes/store', [WorkingProccessController::class, 'store'])->name('store.working.process');
+        Route::get('/admin/Working-Processes/edit/{id}', [WorkingProccessController::class, 'edit'])->name('edit.working.process');
+        Route::post('/admin/Working-Processes/update/{id}', [WorkingProccessController::class, 'update'])->name('update.working.process');
+        Route::get('/admin/Working-Processes/delete/{id}', [WorkingProccessController::class, 'destroy'])->name('delete.working.process');
+        Route::get('/admin/search/Working-Process', [SearchController::class, 'searchWorkingProcess'])->name('admin.search.working.process');
 
         Route::get('/admin/blogs', [BlogController::class, 'index'])->name('index.blog');
         Route::get('/admin/blogs/create', [BlogController::class, 'create'])->name('create.blog');
