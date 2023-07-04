@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AboutMeController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminProfileController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogController;
@@ -39,11 +40,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
 Route::middleware('auth', 'verified')->group(function () {
 
     Route::middleware('isAdmin')->group(function () {
 
         Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+        Route::controller(AdminProfileController::class)->group(function() {
+            Route::get('/admin/profile', 'index')->name('admin.profile');
+            Route::post('/admin/profile/update/{id}','update')->name('admin.profile.update');
+            Route::get('/admin/change/password', 'changePassword')->name('admin.change.password');
+            Route::post('/admin/update/password', 'updatePassword')->name('admin.update.password');
+        });
 
         Route::controller(MultiImageController::class)->group(function() {
             Route::get('/admin/all/multi/image/', 'index')->name('all.multi.image');
@@ -151,8 +161,6 @@ Route::middleware('auth', 'verified')->group(function () {
     });
 
     Route::get('/admin/logout', [AdminController::class, 'destroy'])->name('admin.logout');
-
-    Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
     Route::controller(FrontendBlogDetailsController::class)->group(function() {
         Route::get('/blog/details/{id}', 'index')->name('blog.details');

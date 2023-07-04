@@ -23,6 +23,10 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => 'Admin111', // password
             'remember_token' => Str::random(10),
+            'username' => fake()->userName(),
+            'phone' => fake()->phoneNumber(),
+            'address' => fake()->address(),
+            'photo' => 'admin/banner_img.png',
             'isAdmin' => '1'
         ];
     }
