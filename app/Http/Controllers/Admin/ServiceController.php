@@ -6,6 +6,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceRequest;
+use App\Services\FileUploadService;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 
@@ -22,18 +23,13 @@ class ServiceController extends Controller
         return view('admin.Services.create');
     }
 
-    public function store(ServiceRequest $request)
+    public function store(ServiceRequest $request, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
         if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/services/'.$image_name;
-            Image::make($validatedData['image'])->resize(323, 240)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
+            $fileUploadService->storeServiceImage($validatedData);
         }
-
-        Service::insert($validatedData + ['created_at' => Carbon::now()]);
 
         $notification = ['message' => 'Service Added Successfully', 'type' => 'success'];
 
@@ -46,31 +42,32 @@ class ServiceController extends Controller
         return view('admin.Services.edit', compact('service'));
     }
 
-    public function update(ServiceRequest $request, $id)
+    public function update(ServiceRequest $request, $id, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
-        if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/services/'.$image_name;
-            Image::make($validatedData['image'])->resize(323, 240)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
-        }
+        $service = Service::findOrFail($id);
 
-        Service::findOrFail($id)->update($validatedData);
+        if ($request->hasFile('image')) {
+            $image = $service->image;
+
+            $fileUploadService->updateServiceImage($validatedData, $id, $image);
+        }
 
         $notification = ['message' => 'Service Updated Successfully', 'type' => 'success'];
 
         return redirect()->route('index.service')->with($notification);
     }
 
-    public function destroy($id)
+    public function destroy($id, FileUploadService $fileUploadService)
     {
         $service = Service::findOrFail($id);
-        $image = $service->image;
-        unlink($image);
 
-        Service::findOrFail($id)->delete();
+        $image = $service->image;
+
+        $fileUploadService->destroyServiceImage($image);
+
+        $service->delete();
 
         $notification = ['message' => 'Service Deleted Successfully', 'type' => 'success'];
 

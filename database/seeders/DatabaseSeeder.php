@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
         Partner::factory()->count(1)->create();
         Contact::factory()->count(5)->create();
         BlogCategory::factory()->count(1)->create();
-        // User::factory()->count(1)->create();
+        User::factory()->count(1)->create();
         Service::factory()->count(5)->create();
         Blog::factory()->count(5)->create();
         Portfolio::factory()->count(5)->create();

@@ -21,7 +21,7 @@
                                     <li class="{{ ($route == '')? 'active' : '' }}"><a href="/">Home</a></li>
                                     <li class="{{ ($route == 'about.details')? 'active' : '' }}"><a href="{{ route('about.details') }}">About</a></li>
                                     <li class="{{ ($route == 'services')? 'active' : '' }}"><a href="{{ route('services') }}">Services</a></li>
-                                    <li class="{{ ($route == 'portfolios.index')? 'active' : '' }}"><a href="{{ route('portfolios.index') }}">Portfolios</a></li>
+                                    <li class="{{ ($route == 'index.portfolios')? 'active' : '' }}"><a href="{{ route('index.portfolios') }}">Portfolios</a></li>
                                     <li class="{{ ($route == 'home.blog')? 'active' : '' }}"><a href="{{ route('home.blog') }}">Our
                                             Blog</a></li>
                                     <li class="{{ ($route == 'contact.index')? 'active' : '' }}"><a href="{{ route('contact.index') }}">contact me</a></li>

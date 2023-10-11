@@ -70,7 +70,7 @@ Route::middleware('auth', 'verified')->group(function () {
             Route::post('/admin/store/portfolios', 'store')->name('store.portfolios');
             Route::get('/admin/edit/portfolios/{id}', 'edit')->name('edit.portfolios');
             Route::post('/admin/update/portfolios/{id}', 'update')->name('update.portfolios');
-            Route::get('/admin/delete/portfolio/{id}', 'destroy')->name('delete.portfolios');
+            Route::get('/admin/delete/portfolios/{id}', 'destroy')->name('delete.portfolios');
         });
 
         Route::controller(BlogCategoryController::class)->group(function() {

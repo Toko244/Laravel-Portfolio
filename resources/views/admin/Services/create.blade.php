@@ -4,7 +4,7 @@
 
 <div class="page-wrapper">
     <div class="card-body">
-        <form action="{{ route('') }}" class="custom-validation" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('store.service') }}" class="custom-validation" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label>Service Title</label>

@@ -18,7 +18,7 @@
                         </span>
                     </div>
                 </div>
-            </div><!-- end cardbody -->
+            </div><!-- end cardbody -->x
         </div><!-- end card -->
     </div><!-- end col -->
     <div class="col-xl-3 col-md-6">
@@ -85,7 +85,7 @@
                         <h4 class="mb-2">{{ $messages }}</h4>
                         <a href="{{ route('admin.contact.index') }}">All Messages</a>
                     </div>
-                    <div class="avatar-sm">
+                    <div class="avatar-sm">6
                         <span class="avatar-title bg-light text-success rounded-3">
                             <i class="mdi mdi-currency-btc font-size-24"></i>
                         </span>

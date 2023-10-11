@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AboutRequest;
 use App\Http\Controllers\Controller;
 use App\Models\MultiImage;
+use App\Services\FileUploadService;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 
@@ -18,18 +19,16 @@ class AboutMeController extends Controller
         return view('admin.About.index', compact('about'));
     }
 
-    public function update(AboutRequest $request, $id)
+    public function update(AboutRequest $request, $id, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
-        if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/about/'.$image_name;
-            Image::make($validatedData['image'])->resize(636, 852)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
-        }
+        $about = About::findOrFail($id);
 
-        About::findOrFail($id)->update($validatedData);
+        if ($request->hasFile('image')) {
+            $image = $about->image;
+            $fileUploadService->updateAboutImage($validatedData, $id, $image);
+        };
 
         $notification = array('message' => 'About Updated Successfully', 'type' => 'success');
 

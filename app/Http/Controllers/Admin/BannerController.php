@@ -6,6 +6,7 @@ use App\Models\Banner;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BannerRequest;
+use App\Services\FileUploadService;
 use Intervention\Image\Facades\Image;
 
 class BannerController extends Controller
@@ -16,18 +17,16 @@ class BannerController extends Controller
         return view('admin.Banner.index', compact('banner'));
     }
 
-    public function update(BannerRequest $request, $id)
+    public function update(BannerRequest $request, $id, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
-        if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/banner/'.$image_name;
-            Image::make($validatedData['image'])->resize(636, 852)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
-        }
+        $banner = Banner::findOrFail($id);
 
-        Banner::findOrFail($id)->update($validatedData);
+        if ($request->hasFile('image')) {
+            $image = $banner->image;
+            $fileUploadService->updateBannerImage($validatedData, $id, $image);
+        }
 
         $notification = array('message' => 'Banner Updated Successfully', 'type' => 'success');
 

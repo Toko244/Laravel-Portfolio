@@ -7,73 +7,94 @@ use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use App\Http\Requests\PortfolioRequest;
 use App\Models\Portfolio;
+use App\Services\FileUploadService;
 
 class PortfolioController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $portfolio = Portfolio::latest()->paginate(10);
         return view('admin.Portfolio.index', compact('portfolio'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         return view('admin.Portfolio.create');
     }
 
-    public function store(PortfolioRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(PortfolioRequest $request, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
         if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/portfolio/'.$image_name;
-            Image::make($validatedData['image'])->resize(1020, 519)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
-        }
-
-        Portfolio::insert($validatedData);
+            $fileUploadService->storePortfolioImage($validatedData);
+        };
 
         $notification = array('message' => 'Portfolio Inserted Successfully', 'type' => 'success');
 
         return redirect()->route('index.portfolios')->with($notification);
     }
 
+    /**
+     * Display the specified resource.
+     */
+
+     ////////////////
+
+    /**
+     * Show the form for editing the specified resource.6
+     */
     public function edit($id)
     {
         $portfolio = Portfolio::findOrFail($id);
         return view('admin.Portfolio.edit', compact('portfolio'));
     }
 
-    public function update(PortfolioRequest $request, $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(PortfolioRequest $request, $id, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
+        $portfolio = Portfolio::findOrFail($id);
+
         if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/portfolio/'.$image_name;
-            Image::make($validatedData['image'])->resize(1020, 519)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
+            $image = $portfolio->image;
+
+            $fileUploadService->updatePortfolioImage($validatedData, $id, $image);
         }
 
-        Portfolio::findOrFail($id)->update($validatedData);
 
         $notification = array('message' => 'Portfolio Updated Successfully', 'type' => 'success');
 
         return redirect()->route('index.portfolios')->with($notification);
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id, FileUploadService $fileUploadService)
     {
         $portfolio = Portfolio::findOrFail($id);
-        $image = $portfolio->image;
-        unlink($image);
 
-        Portfolio::findOrFail($id)->delete();
+        $image = $portfolio->image;
+
+        $fileUploadService->destroyPortfolioImage($image);
+
+        $portfolio->delete();
 
         $notification = array('message' => 'Portfolio Deleted Successfully', 'type' => 'success');
 
         return redirect()->route('index.portfolios')->with($notification);
-
     }
 }

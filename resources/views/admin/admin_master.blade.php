@@ -45,19 +45,19 @@
             @include('admin.components.sidebar')
             <!-- Left Sidebar End -->
 
-
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
+====================== -->
             <div class="main-content">
                 <div class="page-content">
                     @yield('admin')
                 </div>
-            </div>
 
-            @include('admin.components.footer')
-            <!-- end main content-->
+                <!-- ============================================================== -->
+                <!-- Start right Content here -->
+                <!-- ========================================
+                </div>
+
+                @include('admin.components.footer')
+                <!-- end main content-->
 
         </div>
         <!-- END layout-wrapper -->

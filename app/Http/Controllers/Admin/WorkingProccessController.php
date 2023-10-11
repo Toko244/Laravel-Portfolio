@@ -7,6 +7,7 @@ use App\Models\WorkingProcess;
 use App\Http\Controllers\Controller;
 use Intervention\Image\Facades\Image;
 use App\Http\Requests\WorkingProcessRequest;
+use App\Services\FileUploadService;
 
 class WorkingProccessController extends Controller
 {
@@ -30,18 +31,13 @@ class WorkingProccessController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(WorkingProcessRequest $request)
+    public function store(WorkingProcessRequest $request, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
         if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/working_process/'.$image_name;
-            Image::make($validatedData['image'])->resize(56, 56)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
+            $fileUploadService->storeWorkingProcessImage($validatedData);
         }
-
-        WorkingProcess::insert($validatedData);
 
         $notification = array('message' => 'Working Process Inserted Successfully', 'type' => 'success');
 
@@ -60,18 +56,17 @@ class WorkingProccessController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(WorkingProcessRequest $request, string $id)
+    public function update(WorkingProcessRequest $request, string $id, FileUploadService $fileUploadService)
     {
         $validatedData = $request->validated();
 
-        if ($request->hasFile('image')) {
-            $image_name = uniqid() . '.' . $validatedData['image']->getClientOriginalExtension();
-            $image_path = 'uploads/working_process/'.$image_name;
-            Image::make($validatedData['image'])->resize(56, 56)->save(public_path($image_path));
-            $validatedData['image'] = $image_path;
-        }
+        $workingProcess = WorkingProcess::findOrFail($id);
 
-        WorkingProcess::findOrFail($id)->update($validatedData);
+        if ($request->hasFile('image')) {
+            $image = $workingProcess->image;
+
+            $fileUploadService->updateWorkingProcessImage($validatedData, $id, $image);
+        }
 
         $notification = array('message' => 'Working Process Updated Successfully', 'type' => 'success');
 
@@ -81,14 +76,15 @@ class WorkingProccessController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, FileUploadService $fileUploadService)
     {
         $workingProcess = WorkingProcess::findOrFail($id);
 
         $image = $workingProcess->image;
-        unlink($image);
 
-        WorkingProcess::findOrFail($id)->delete();
+        $fileUploadService->destroyWorkingProcessImage($image);
+
+        $workingProcess->delete();
 
         $notification = array('message' => 'Working Process Deleted Successfully', 'type' => 'success');
 
